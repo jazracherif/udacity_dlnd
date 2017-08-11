@@ -1,14 +1,14 @@
 # Face Generation using DCGAN
 
-In this project, I use a DCGAN architecture as describe in a 2016 paper by [Radford et. al](https://arxiv.org/abs/1511.06434) to learn both MNIST Digits as well as human faces. 
+In this project, I use a DCGAN architecture as described in a 2016 paper by [Radford et. al](https://arxiv.org/abs/1511.06434) to learn both MNIST Digits as well as human faces. 
 
-My implementation slightly differs in terms of the size of the Generator layer and the expected output:
+My implementation slightly differs from the paper in terms of parameters of the Generator and Discriminator modules:
 
 **Generator Architecture**:  
 inputz: dim=100 --> 2x2x1024 --> 4x4x512 --> 7x7x256 --> 14x14x128 --> 28x28x3  
 
 Notes:
-* Instead of performing the transpose convolution, I use the techniques described in this [distill](https://distill.pub/2016/deconv-checkerboard/) article by Odena et. al, which suggests upsampling by first resizing the image using the method of **Nearest Neighbor Interpolation** and then performing the convolution. For example, the layer before last would be resize to a 28x28 images and then performing a convolution with 3 filters:
+* Instead of performing the **Transpose Convolution (Deconvolution)**, I use the techniques described in this [distill](https://distill.pub/2016/deconv-checkerboard/) article by Odena et. al to avoid the problem of image checkerboards, which suggests upsampling by first resizing the image using the method of **Nearest Neighbor Interpolation** and then performing the convolution. For example, the layer before last would be resize to a 28x28 images and then performing a convolution with 3 filters:
 ```
 x = tf.image.resize_nearest_neighbor(img, size=(28,28))
 x = tf.layers.conv2d(x, 3, (5,5), padding='same', use_bias=False, activation=None)
